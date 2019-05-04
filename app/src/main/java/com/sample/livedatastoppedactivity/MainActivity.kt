@@ -1,14 +1,17 @@
 package com.sample.livedatastoppedactivity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.navigation.Navigation
 
 class MainActivity : AppCompatActivity() {
+
+    var secondFragmentNavigated : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,11 +24,15 @@ class MainActivity : AppCompatActivity() {
         model.valuesLiveData.observe( this, Observer { value ->
             value ?.let {
                 Log.d( TAG, "Value notified $it" )
-                textView.text = "$it"
+
+                if( !secondFragmentNavigated && it > 10 ) {
+                    secondFragmentNavigated = true
+                    Navigation.findNavController(this, R.id.navHostFragment ).navigate( R.id.secondFragment )
+                }
             }
         } )
 
-        textView.postDelayed( {
+        Handler().postDelayed( {
             Intent( this, SecondActivity::class.java ).also { intent ->
                 startActivity( intent )
             }
