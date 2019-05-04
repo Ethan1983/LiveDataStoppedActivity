@@ -24,11 +24,6 @@ class MainActivity : AppCompatActivity() {
         model.valuesLiveData.observe( this, Observer { value ->
             value ?.let {
                 Log.d( TAG, "Value notified $it" )
-
-                if( !secondFragmentNavigated && it > 10 ) {
-                    secondFragmentNavigated = true
-                    Navigation.findNavController(this, R.id.navHostFragment ).navigate( R.id.secondFragment )
-                }
             }
         } )
 
@@ -62,6 +57,12 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         Log.d( TAG, "onStop" )
+
+        Handler().postDelayed( {
+            Log.d( TAG, "Navigate to Second Fragment from Stopped State" )
+            secondFragmentNavigated = true
+            Navigation.findNavController(this, R.id.navHostFragment ).navigate( R.id.secondFragment )
+        }, 5000)
     }
 
     override fun onDestroy() {
